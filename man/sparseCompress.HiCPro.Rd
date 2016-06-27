@@ -6,13 +6,13 @@
 \alias{sparseCompress.HiCPro,ANY-method}
 \title{Compress Hi-C Pro output data}
 \usage{
-sparseCompress.HiCPro(matrix.file, bed.file, res, n = 40, out.pre = NA,
-  genomeBuild = NA, drop.chrom = c("chrY", "chrM"), list = TRUE,
+sparseCompress.HiCPro(matrix.file, bed.file, res, n = 40, genomeBuild = NA,
+  out.pre = NA, drop.chrom = c("chrY", "chrM"), list = TRUE,
   save = FALSE, compress = FALSE, dir.create = FALSE, manual.chr = NA,
   manual.dist = NA, BPPARAM = bpparam())
 
 \S4method{sparseCompress.HiCPro}{ANY}(matrix.file, bed.file, res, n = 40,
-  out.pre = NA, genomeBuild = NA, drop.chrom = c("chrY", "chrM"),
+  genomeBuild = NA, out.pre = NA, drop.chrom = c("chrY", "chrM"),
   list = TRUE, save = FALSE, compress = FALSE, dir.create = FALSE,
   manual.chr = NA, manual.dist = NA, BPPARAM = bpparam())
 }
@@ -26,9 +26,11 @@ sparseCompress.HiCPro(matrix.file, bed.file, res, n = 40, out.pre = NA,
 \item{n}{Number of off-diagonal rows to retain features to retain. 
 If n = 0, retain the full data.}
 
-\item{out.pre}{= NA}
+\item{genomeBuild}{= NA Can specify one of c("hg19", "hg18", "mm9") that are
+built-in options for Hi-C chromosomes and distances. If not of these options
+are suitable, then use the \code{manual.chr} and \code{manual.dist} parameters}
 
-\item{genomeBuild}{= NA}
+\item{out.pre}{= NA Prefix required if}
 
 \item{drop.chrom}{= c("chrY", "chrM")}
 
@@ -41,11 +43,12 @@ the raw data.}
 
 \item{dir.create}{If list is FALSE and save is TRUE}
 
-\item{manual.chr}{= NA}
+\item{manual.chr}{= NA Specify a vector of chromosome names in the data}
 
-\item{manual.dist}{= NA}
+\item{manual.dist}{= NA Specify a same length vector as manual.chr with the 
+chromosomal distances corresponding to each element in the manual.chr}
 
-\item{BPPARAM}{= bpparam()}
+\item{BPPARAM}{= bpparam() Parameters to pass to bplapply}
 }
 \value{
 Either .rds files szved on the local disk or a list of sparse matrices
@@ -62,7 +65,11 @@ one (if list = TRUE) or many (list = FALSE) .rds files will be created
 of the compressed Hi-C interactions in sparse matrices.
 }
 \examples{
-rda <- paste(system.file("rda", package = "diffloop"), "loops.small.rda", sep = "/")
+matrix.file <- paste(system.file("extdata", package = "processedHiCData"), "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_iced.matrix", sep = "/")
+bed.file <- paste(system.file("extdata", package = "processedHiCData"), "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_abs.bed", sep = "/")
+genomeBuild <- "hg19"
+res <- "1000000"
+# x <- sparseCompress.HiCPro(matrix.file, bed.file, res, genomeBuild)
 
 }
 

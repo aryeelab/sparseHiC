@@ -2,7 +2,7 @@ Package: sparseHiC
 Type: Package
 Title: Efficient parallelized compression of Hi-C Data
 Version: 0.1.0
-Date: 2016-06-27
+Date: 2016-06-29
 Authors@R: c(
     person("Caleb", "Lareau", email = "caleblareau@g.harvard.edu", role = c("aut", "cre")),
     person("Martin", "Aryee", email = "aryee.martin@mgh.harvard.edu", role = "aut")
@@ -19,7 +19,8 @@ LazyData: TRUE
 Suggests:
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    processedHiCData
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 biocViews: Preprocessing, QualityControl, Visualization, DataImport,
