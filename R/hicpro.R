@@ -15,15 +15,16 @@ NULL
 #' @param matrix.file Path to .matrix file from Hi-C Pro Output
 #' @param bed.file Path to .bed file from Hi-C Pro Output
 #' @param res Character of the resolution of the Hi-C output
-#' @param n Number of off-diagonal rows to retain features to retain. 
-#' If n = 0, retain the full data. 
 #' @param genomeBuild = NA Can specify one of c("hg19", "hg18", "mm9") that are
 #' built-in options for Hi-C chromosomes and distances. If not of these options
 #' are suitable, then use the \code{manual.chr} and \code{manual.dist} parameters
+#' @param n Number of off-diagonal rows to retain features to retain. 
+#' If n = 0, retain the full data. 
 #' @param out.pre = NA Prefix required if 
 #' @param drop.chrom = c("chrY", "chrM")
-#' @param list = TRUE
-#' @param save = FALSE
+#' @param list = TRUE If the user wants to split based on chromosome, must specify
+#' that save is TRUE
+#' @param save = FALSE Save to .rds in lieu of returning the value? Useful when splitting. 
 #' @param compress if dir.create is TRUE, compresses the directory (to .tgz) and removes
 #' the raw data. 
 #' @param dir.create If list is FALSE and save is TRUE
@@ -35,11 +36,13 @@ NULL
 #' @return Either .rds files szved on the local disk or a list of sparse matrices
 #'
 #' @examples
-#' matrix.file <- paste(system.file("extdata", package = "processedHiCData"), "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_iced.matrix", sep = "/")
-#' bed.file <- paste(system.file("extdata", package = "processedHiCData"), "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_abs.bed", sep = "/")
+#' # matrix.file <- paste(system.file("extdata", package = "processedHiCdata"), "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_iced.matrix", sep = "/")
+#' # bed.file <- paste(system.file("extdata", package = "processedHiCdata"), "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_abs.bed", sep = "/")
 #' genomeBuild <- "hg19"
 #' res <- "1000000"
 #' # x <- sparseCompress.HiCPro(matrix.file, bed.file, res, genomeBuild)
+#' # x <- sparseCompress.HiCPro(matrix.file, bed.file, res, genomeBuild, list = FALSE,
+#' #          save = TRUE, out.pre = "LOL", dir.create = TRUE, compress = TRUE, n = 0)
 #' 
 #' @import GenomicRanges
 #' @import Matrix
@@ -49,44 +52,51 @@ NULL
 
 #' @export
 setGeneric(name = "sparseCompress.HiCPro",
-          def = function(matrix.file, bed.file, res, n = 40, genomeBuild = NA,
+          def = function(matrix.file, bed.file, res, genomeBuild = NA, n = 40,
                          out.pre = NA, drop.chrom = c("chrY", "chrM"), list = TRUE,
                          save = FALSE, compress = FALSE, dir.create = FALSE,
-                         manual.chr = NA, manual.dist = NA, BPPARAM = bpparam())
+                         manual.chr = NA, manual.dist = NA, BPPARAM = BiocParallel::bpparam())
                standardGeneric("sparseCompress.HiCPro"))
 
 #' @rdname sparseCompress.HiCPro
 setMethod(f = "sparseCompress.HiCPro",
-          def = function(matrix.file, bed.file, res, n = 40, genomeBuild = NA,
+          def = function(matrix.file, bed.file, res, genomeBuild = NA, n = 40,
                          out.pre = NA, drop.chrom = c("chrY", "chrM"), list = TRUE,
                          save = FALSE, compress = FALSE, dir.create = FALSE,
-                         manual.chr = NA, manual.dist = NA, BPPARAM = bpparam()){
+                         manual.chr = NA, manual.dist = NA, BPPARAM = BiocParallel::bpparam()){
               
     # Early fails; more in the chrDistBuild function that will serve globally
-    if( is.na(out.pre) & save ) stop("Specifiy out.pre for the outputted .rds files")
+    if( is.na(out.pre) & save ) stop("Specifiy out.pre for the saved files")
     stopifnot(is.character(res))
-    stopifnot(is.integer(n), n >= 0 )
+    stopifnot(!list & save)
+    stopifnot(n >= 0 )
     
     # Configure some of the user parameters
-    dist <- chrDistBuild(genomeBuild, manusal.chr, manual.dist)
+    dist <- chrDistBuild(genomeBuild, manual.chr, manual.dist)
     dist <- dist[!(names(dist) %in% drop.chrom)]
     op <- paste0(out.pre, "_", res)
-    if(dir.create) dir.create(op)
-    
+    fs <- ""
+    if(dir.create){
+        dir.create(op)
+        fs <- paste0(op, "/")
+    }
+    bed.GRanges <- GRanges(data.frame(read_tsv(bed.file, col_names = c("chr", "start", "stop", "region"))))
+    dat.long <-read_tsv(matrix.file, col_names = c("idx1", "idx2", "region"))
+
     # Create either a list or save split files
     list.dat <- bplapply(names(dist), function(chr) {
-        mat.chrom <- matrixBuild(chr, bed.GRanges, dat.long, dist, n = 41)
+        mat.chrom <- matrixBuild(chr, bed.GRanges, dat.long, res, dist, n)
         if(save & !list){
             saveRDS(Matrix(as.matrix(mat.chrom)),
-                    file = paste0(op, "/", op, "-", chr, ".rds"))
+                    file = paste0(fs, op, "-", chr, ".rds"))
         } else {
             Matrix(as.matrix(mat.chrom))   
         }
-    }, BPPARAM = param)
+    }, BPPARAM = BPPARAM)
     
     if(list) { 
         names(list.dat) <- names(dist)
-        if(save) saveRDS(list.dat, file = paste0(op, ".rds"))
+        if(save) saveRDS(list.dat, file = paste0(fs, op, ".rds"))
         return(list.dat)
     }
     

@@ -20,7 +20,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat,
-    processedHiCData
+    processedHiCdata
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 biocViews: Preprocessing, QualityControl, Visualization, DataImport,

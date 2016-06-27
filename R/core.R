@@ -2,7 +2,7 @@
 NULL
 
 # Internal function that deals with the user-specified chromosome builds
-chrDistBuild <- function(genomeBuild, manusal.chr, manual.dist) {
+chrDistBuild <- function(genomeBuild, manual.chr, manual.dist) {
     if(!is.na(genomeBuild)){
         if(genomeBuild == "hg19"){
             sizeFile <- paste(system.file("extdata", package = "sparseHiC"), 
@@ -19,6 +19,7 @@ chrDistBuild <- function(genomeBuild, manusal.chr, manual.dist) {
         sdf <- read.table(sizeFile)
         dist <- sdf$V2
         names(dist) <- sdf$V1
+        
     } else {
         stopifnot(!is.na(manual.chr), !is.na(manual.dist), length(manual.dist) == length(manual.chr))
         dist <- manual.dist
@@ -28,6 +29,7 @@ chrDistBuild <- function(genomeBuild, manusal.chr, manual.dist) {
 }
 
 matrixBuild <- function(chr, bed.GRanges, dat.long, res, dist, n){
+    options(scipen=999)
     cur.chrom <- bed.GRanges[seqnames(bed.GRanges) == chr]
     vals <-  mcols(cur.chrom)$region 
     dat.chrom <- dat.long[dat.long$idx1 %in% vals & dat.long$idx2 %in% vals, ]
@@ -41,10 +43,10 @@ matrixBuild <- function(chr, bed.GRanges, dat.long, res, dist, n){
     zeros.long <- cbind(t(combn(bins, 2)), 0)
     zeros.long <- rbind(zeros.long, cbind(bins, bins, 0))
     colnames(zeros.long) <- c("idx1", "idx2", "region")
-    
+
     mat.chrom <- dcast(data = rbind(dat.chrom, zeros.long), formula = idx2 ~ idx1,
                        value.var = "region", fill = 0, fun.aggregate = sum)
-    row.names(mat.chrom) <- as.character(mat.chrom[, 1])
+    row.names(mat.chrom) <- as.character(format(mat.chrom[, 1], scientific = FALSE))
     mat.chrom <- mat.chrom[, -1]
     
     i <- dim(mat.chrom)[1]
