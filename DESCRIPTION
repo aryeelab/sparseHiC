@@ -11,9 +11,15 @@ Maintainer: Caleb Lareau <caleblareau@g.harvard.edu>
 Author: Caleb Lareau [aut, cre], Martin Aryee [aut]
 Description: A set of functions to compress output from common
     HiC pre-processing tools and transforming them into efficient
-    sparse matrices for further downstream analyses
+    sparse matrices for further downstream analyses.
 Imports:
-    methods
+    methods,
+    BiocParallel,
+    GenomicRanges,
+    Matrix,
+    readr,
+    reshape2,
+    utils
 License: MIT + file LICENSE
 LazyData: TRUE
 Suggests:

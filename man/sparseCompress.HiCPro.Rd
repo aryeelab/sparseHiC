@@ -8,13 +8,13 @@
 \usage{
 sparseCompress.HiCPro(matrix.file, bed.file, res, genomeBuild = NA, n = 40,
   out.pre = NA, drop.chrom = c("chrY", "chrM"), list = TRUE,
-  save = FALSE, compress = FALSE, dir.create = FALSE, manual.chr = NA,
+  save = FALSE, dir.create = FALSE, compress = FALSE, manual.chr = NA,
   manual.dist = NA, BPPARAM = BiocParallel::bpparam())
 
 \S4method{sparseCompress.HiCPro}{ANY}(matrix.file, bed.file, res,
   genomeBuild = NA, n = 40, out.pre = NA, drop.chrom = c("chrY",
-  "chrM"), list = TRUE, save = FALSE, compress = FALSE,
-  dir.create = FALSE, manual.chr = NA, manual.dist = NA,
+  "chrM"), list = TRUE, save = FALSE, dir.create = FALSE,
+  compress = FALSE, manual.chr = NA, manual.dist = NA,
   BPPARAM = BiocParallel::bpparam())
 }
 \arguments{
@@ -24,26 +24,27 @@ sparseCompress.HiCPro(matrix.file, bed.file, res, genomeBuild = NA, n = 40,
 
 \item{res}{Character of the resolution of the Hi-C output}
 
-\item{genomeBuild}{= NA Can specify one of c("hg19", "hg18", "mm9") that are
-built-in options for Hi-C chromosomes and distances. If not of these options
+\item{genomeBuild}{= NA Can specify one of c("hg38", "hg19", "hg18", "mm10", "mm9", "mm8")
+that are built-in options for Hi-C chromosomes and distances. If not of these options
 are suitable, then use the \code{manual.chr} and \code{manual.dist} parameters}
 
 \item{n}{Number of off-diagonal rows to retain features to retain. 
 If n = 0, retain the full data.}
 
-\item{out.pre}{= NA Prefix required if}
+\item{out.pre}{= NA Prefix required if saving to disk}
 
-\item{drop.chrom}{= c("chrY", "chrM")}
+\item{drop.chrom}{= c("chrY", "chrM") Chromosomes dropped from compression}
 
 \item{list}{= TRUE If the user wants to split based on chromosome, must specify
 that save is TRUE}
 
 \item{save}{= FALSE Save to .rds in lieu of returning the value? Useful when splitting.}
 
+\item{dir.create}{If list is FALSE and save is TRUE, this allows a new folder to be
+created of the resulting .rds files}
+
 \item{compress}{if dir.create is TRUE, compresses the directory (to .tgz) and removes
 the raw data.}
-
-\item{dir.create}{If list is FALSE and save is TRUE}
 
 \item{manual.chr}{= NA Specify a vector of chromosome names in the data}
 
@@ -67,8 +68,10 @@ one (if list = TRUE) or many (list = FALSE) .rds files will be created
 of the compressed Hi-C interactions in sparse matrices.
 }
 \examples{
-# matrix.file <- paste(system.file("extdata", package = "processedHiCdata"), "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_iced.matrix", sep = "/")
-# bed.file <- paste(system.file("extdata", package = "processedHiCdata"), "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_abs.bed", sep = "/")
+# matrix.file <- paste(system.file("extdata", package = "processedHiCdata"),
+# "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_iced.matrix", sep = "/")
+# bed.file <- paste(system.file("extdata", package = "processedHiCdata"),
+# "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_abs.bed", sep = "/")
 genomeBuild <- "hg19"
 res <- "1000000"
 # x <- sparseCompress.HiCPro(matrix.file, bed.file, res, genomeBuild)
