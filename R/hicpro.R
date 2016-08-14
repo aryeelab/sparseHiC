@@ -34,7 +34,7 @@ NULL
 #' chromosomal distances corresponding to each element in the manual.chr
 #' @param BPPARAM = bpparam() Parameters to pass to bplapply
 #'
-#' @return Either .rds files szved on the local disk or a list of sparse matrices
+#' @return Either .rds files saved on the local disk or a list of sparse matrices
 #'
 #' @examples
 #' # matrix.file <- paste(system.file("extdata", package = "processedHiCdata"),
@@ -45,7 +45,7 @@ NULL
 #' res <- "1000000"
 #' # x <- sparseCompress.HiCPro(matrix.file, bed.file, res, genomeBuild)
 #' # x <- sparseCompress.HiCPro(matrix.file, bed.file, res, genomeBuild, list = FALSE,
-#' #          save = TRUE, out.pre = "LOL", dir.create = TRUE, compress = TRUE, n = 0)
+#' #          save = TRUE, out.pre = "hESC-out", dir.create = TRUE, compress = TRUE, n = 0)
 #' 
 #' @import GenomicRanges
 #' @importFrom utils read.table combn tar
@@ -72,8 +72,8 @@ setMethod(f = "sparseCompress.HiCPro",
     # Early fails; more in the chrDistBuild function that will serve globally
     if( is.na(out.pre) & save ) stop("Specifiy out.pre for the saved files")
     stopifnot(is.character(res))
-    stopifnot(!list & save)
-    stopifnot(n >= 0 )
+    stopifnot(list & !save)
+    stopifnot( n >= 0 )
     
     # Configure some of the user parameters
     dist <- chrDistBuild(genomeBuild, manual.chr, manual.dist)
