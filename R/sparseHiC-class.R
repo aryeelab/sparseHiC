@@ -27,6 +27,8 @@ check_hic <- function(object) {
 #' of the sparseHiCdatum.
 #' @slot resolutionNamedList A list of lists of Hi-C matrices named using the
 #' string of the resolution.
+#' @slot metaData A slot containing data corresponding to annotation data for
+#' the particular sample.
 #' @export
 sparseHiCdatum <- setClass("sparseHiCdatum",
                            slots = c(sampleName = "character",
@@ -57,6 +59,7 @@ check_hic_samples <- function(object) {
 #'
 #' @slot HiCSamplesList A list (named by samples) of lists (per sample resolutions)
 #' of lists (Hi-C matrices)
+#' @slot metaData A data.frame of data that may be useful for 
 #' 
 #' @export
 sparseHiCdata <- setClass("sparseHiCdata",

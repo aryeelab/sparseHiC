@@ -13,7 +13,7 @@ NULL
 #' @param matrix.files Path to .matrix files from Hi-C Pro Output
 #' @param bed.files Path to .bed files from Hi-C Pro Output
 #' @param resolutions Character vector of the resolutions of the Hi-C output
-#' @param Sample name (single string) of Hi-C data being read in
+#' @param sampleName Single string of Hi-C data sample that is imported
 #' @param genomeBuild = NA Can specify one of c("hg38", "hg19", "hg18", "mm10", "mm9", "mm8")
 #' that are built-in options for Hi-C chromosomes and distances. If not of these options
 #' are suitable, then use the \code{manual.chr} and \code{manual.dist} parameters
@@ -58,7 +58,7 @@ setMethod(f = "import.HiCPro",
                          BPPARAM = BiocParallel::bpparam()){
               
     # Early fails; more in the chrDistBuild function that will serve globally
-    stopifnot(is.character(res))
+    stopifnot(is.character(resolutions))
     stopifnot( n >= 0 )
     stopifnot(length(matrix.files) == length(bed.files) & length(bed.files) == length(resolutions))
     
@@ -83,7 +83,7 @@ setMethod(f = "import.HiCPro",
     
     if(is.na(genomeBuild)) genomeBuild <- "custom"
     md <- data.frame(genomeBuild)
-    obj <- new("sparseHiCdatum", sampleName = sampleName, resolutionNamedList = collectedRes)
+    obj <- new("sparseHiCdatum", sampleName = sampleName, resolutionNamedList = collectedRes, metaData = md)
     return(obj)
 })
 
@@ -97,7 +97,8 @@ setMethod(f = "import.HiCPro",
 #' 
 #' @param matrix.files Paths to .matrix files from Hi-C Pro Output
 #' @param bed.files Paths to .bed files from Hi-C Pro Output
-#' @param res Character vector of the resolutions of the Hi-C output
+#' @param resolutions Character vector of the resolutions of the Hi-C output
+#' @param sampleName Single string of Hi-C data sample that is imported
 #' @param genomeBuild = NA Can specify one of c("hg38", "hg19", "hg18", "mm10", "mm9", "mm8")
 #' that are built-in options for Hi-C chromosomes and distances. If not of these options
 #' are suitable, then use the \code{manual.chr} and \code{manual.dist} parameters
@@ -120,20 +121,19 @@ setMethod(f = "import.HiCPro",
 #' 
 #' @export
 setGeneric(name = "import.HiCPro.full",
-          def = function(matrix.files, bed.files, resolutions, genomeBuild = NA,
+          def = function(matrix.files, bed.files, resolutions, sampleName, genomeBuild = NA,
                          drop.chrom = c("chrY", "chrM"), manual.chr = NA, manual.dist = NA,
                          BPPARAM = BiocParallel::bpparam())
               standardGeneric("import.HiCPro.full"))
 
 #' @rdname import.HiCPro.full
 setMethod(f = "import.HiCPro.full",
-          def = function(matrix.files, bed.files, resolutions, genomeBuild = NA,
+          def = function(matrix.files, bed.files, resolutions, sampleName, genomeBuild = NA,
                          drop.chrom = c("chrY", "chrM"), manual.chr = NA, manual.dist = NA,
                          BPPARAM = BiocParallel::bpparam()){
               
     # Early fails; more in the chrDistBuild function that will serve globally
-    stopifnot(is.character(res))
-    stopifnot( n >= 0 )
+    stopifnot(is.character(resolutions))
     stopifnot(length(matrix.files) == length(bed.files) & length(bed.files) == length(resolutions))
     
     # Configure some of the user parameters
@@ -147,19 +147,20 @@ setMethod(f = "import.HiCPro.full",
         dat.long <-read_tsv(matrix.files[i], col_names = c("idx1", "idx2", "region"))
         
         olists <- bplapply(names(dist), function(chr1) {
-            lapply(names(dist[seq.int(match(chr1, names(dist)), length(dist), 1)]), function(chr2) {
-                mat.chrom <- matrixBuild.intra(chr1, chr2, bed.GRanges, dat.long, res, dist)
+            chr2s <- names(dist[seq.int(match(chr1, names(dist)), length(dist), 1)])
+            ilist <- lapply(chr2s, function(chr2) {
+                mat.chrom <- .matrixBuild.inter(chr1, chr2, bed.GRanges, dat.long, resolutions[i], dist)
                 Matrix(as.matrix(mat.chrom))
             })
+            names(ilist) <- paste0(chr1, "-", chr2s)
+            ilist
         }, BPPARAM = BPPARAM)
         
-        names(list.dat) <- names(dist)
-        list.dat
+        list.dat <- unlist(olists, recursive = FALSE)
     })
     names(collectedRes) <- resolutions
-    obj <- new("sparseHiCdatum", resolutionNamedList = collectedRes)
+    if(is.na(genomeBuild)) genomeBuild <- "custom"
+    md <- data.frame(genomeBuild)
+    obj <- new("sparseHiCdatum", resolutionNamedList = collectedRes, metaData = md)
     return(obj)
-    
-
-
 })
