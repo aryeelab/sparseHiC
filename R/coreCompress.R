@@ -1,8 +1,8 @@
-#' @include sparseHiC.R
+#' @include sparseHiC-class.R
 NULL
 
 # Internal function that deals with the user-specified chromosome builds
-chrDistBuild <- function(genomeBuild, manual.chr, manual.dist) {
+.chrDistBuild <- function(genomeBuild, manual.chr, manual.dist) {
     if(!is.na(genomeBuild)){
         if(genomeBuild == "hg19"){
             sizeFile <- paste(system.file("extdata", package = "sparseHiC"), 
@@ -38,7 +38,7 @@ chrDistBuild <- function(genomeBuild, manual.chr, manual.dist) {
 }
 
 # Computes pairwise 
-matrixBuild.inter <- function(chr, bed.GRanges, dat.long, res, dist, n){
+.matrixBuild.intra <- function(chr, bed.GRanges, dat.long, res, dist, n){
     options(scipen=999)
     cur.chrom <- bed.GRanges[seqnames(bed.GRanges) == chr]
     vals <-  mcols(cur.chrom)$region 
@@ -66,7 +66,7 @@ matrixBuild.inter <- function(chr, bed.GRanges, dat.long, res, dist, n){
 }
 
 # Modification of function above to do two chromosomes instead of just one
-matrixBuild.intra <- function(chr1, chr2, bed.GRanges, dat.long, res, dist){
+.matrixBuild.inter <- function(chr1, chr2, bed.GRanges, dat.long, res, dist){
     options(scipen=999)
     cur.chrom1 <- bed.GRanges[seqnames(bed.GRanges) == chr1]
     vals1 <-  mcols(cur.chrom1)$region 
