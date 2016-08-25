@@ -37,3 +37,5 @@ Collate:
     'sparseHiC-class.R'
     'coreCompress.R'
     'hicpro.R'
+    'primitive.R'
+    'toDNAlandscapeR.R'

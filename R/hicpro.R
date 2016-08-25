@@ -35,7 +35,7 @@ NULL
 #' genomeBuild <- "hg19"
 #' resolutions <- "1000000"
 #' sampleName = "hESC1"
-#' # x <- import.HiCPro(matrix.file, bed.file, res, sampleName = "hESC1", genomeBuild)
+#' # x <- import.HiCPro(matrix.files, bed.files, resolutions, sampleName = "hESC1", genomeBuild)
 #' 
 #' @import GenomicRanges
 #' @importFrom utils read.table combn tar
@@ -111,13 +111,14 @@ setMethod(f = "import.HiCPro",
 #' @return sparseHiCdatum of all chromosomal interactions pairwise
 #'
 #' @examples
-#' # matrix.file <- paste(system.file("extdata", package = "processedHiCdata"),
+#' # matrix.files <- paste(system.file("extdata", package = "processedHiCdata"),
 #' # "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_iced.matrix", sep = "/")
-#' # bed.file <- paste(system.file("extdata", package = "processedHiCdata"),
+#' # bed.files <- paste(system.file("extdata", package = "processedHiCdata"),
 #' # "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_abs.bed", sep = "/")
 #' genomeBuild <- "hg19"
-#' res <- "1000000"
-#' # x <- import.HiCPro.full(matrix.file, bed.file, res, genomeBuild, "hESC_rep1")
+#' resolutions <- "1000000"
+#' sampleName = "hESC1"
+#' # x <- import.HiCPro.full(matrix.file, bed.file, res, sampleName = "hESC1", genomeBuild)
 #' 
 #' @export
 setGeneric(name = "import.HiCPro.full",
@@ -161,6 +162,6 @@ setMethod(f = "import.HiCPro.full",
     names(collectedRes) <- resolutions
     if(is.na(genomeBuild)) genomeBuild <- "custom"
     md <- data.frame(genomeBuild)
-    obj <- new("sparseHiCdatum", resolutionNamedList = collectedRes, metaData = md)
+    obj <- new("sparseHiCdatum", sampleName = sampleName, resolutionNamedList = collectedRes, metaData = md)
     return(obj)
 })

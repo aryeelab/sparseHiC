@@ -47,13 +47,14 @@ function to utilize for memory disk concerns but we do support importing the
 full data into this framework.
 }
 \examples{
-# matrix.file <- paste(system.file("extdata", package = "processedHiCdata"),
+# matrix.files <- paste(system.file("extdata", package = "processedHiCdata"),
 # "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_iced.matrix", sep = "/")
-# bed.file <- paste(system.file("extdata", package = "processedHiCdata"),
+# bed.files <- paste(system.file("extdata", package = "processedHiCdata"),
 # "HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_abs.bed", sep = "/")
 genomeBuild <- "hg19"
-res <- "1000000"
-# x <- import.HiCPro.full(matrix.file, bed.file, res, genomeBuild, "hESC_rep1")
+resolutions <- "1000000"
+sampleName = "hESC1"
+# x <- import.HiCPro.full(matrix.file, bed.file, res, sampleName = "hESC1", genomeBuild)
 
 }
 

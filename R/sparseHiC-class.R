@@ -46,10 +46,10 @@ check_hic_samples <- function(object) {
         msg <- "Names of samples should be a character vector"
         errors <- c(errors, msg)
     }
-    if(!all(sapply(object, checkHiCdtm))){
-        msg <- "Attempting to assemble one or more non-sparseHiCdatum objects"
-        errors <- c(errors, msg)
-    }
+    #if(!all(sapply(object@HiCSamplesList, checkHiCdtm))){
+    #    msg <- "Attempting to assemble one or more non-sparseHiCdatum objects"
+    #    errors <- c(errors, msg)
+    #}
     if (length(errors) == 0) TRUE else errors
 }
 
