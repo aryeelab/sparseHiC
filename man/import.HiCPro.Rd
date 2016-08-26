@@ -8,11 +8,13 @@
 \usage{
 import.HiCPro(matrix.files, bed.files, resolutions, sampleName,
   genomeBuild = NA, n = 40, drop.chrom = c("chrY", "chrM"),
-  manual.chr = NA, manual.dist = NA, BPPARAM = BiocParallel::bpparam())
+  manual.chr = NA, manual.dist = NA, tempFile = TRUE,
+  BPPARAM = BiocParallel::bpparam())
 
 \S4method{import.HiCPro}{ANY}(matrix.files, bed.files, resolutions, sampleName,
   genomeBuild = NA, n = 40, drop.chrom = c("chrY", "chrM"),
-  manual.chr = NA, manual.dist = NA, BPPARAM = BiocParallel::bpparam())
+  manual.chr = NA, manual.dist = NA, tempFile = TRUE,
+  BPPARAM = BiocParallel::bpparam())
 }
 \arguments{
 \item{matrix.files}{Path to .matrix files from Hi-C Pro Output}
@@ -36,6 +38,9 @@ If n = 0, retain the full data.}
 
 \item{manual.dist}{= NA Specify a same length vector as manual.chr with the 
 chromosomal distances corresponding to each element in the manual.chr}
+
+\item{tempFile}{= TRUE Create a temporary file in awk to make i/o faster
+and more memory efficient.}
 
 \item{BPPARAM}{= bpparam() Parameters to pass to bplapply}
 }

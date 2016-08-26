@@ -23,6 +23,8 @@ NULL
 #' @param manual.chr = NA Specify a vector of chromosome names in the data
 #' @param manual.dist = NA Specify a same length vector as manual.chr with the 
 #' chromosomal distances corresponding to each element in the manual.chr
+#' @param tempFile = TRUE Create a temporary file in awk to make i/o faster
+#' and more memory efficient. 
 #' @param BPPARAM = bpparam() Parameters to pass to bplapply
 #'
 #' @return sparseHiCdatum of all intrachromosomal interactions of n diagonals
@@ -48,14 +50,14 @@ NULL
 setGeneric(name = "import.HiCPro",
           def = function(matrix.files, bed.files, resolutions, sampleName, genomeBuild = NA, 
                          n = 40, drop.chrom = c("chrY", "chrM"), manual.chr = NA, manual.dist = NA,
-                         BPPARAM = BiocParallel::bpparam())
+                         tempFile = TRUE, BPPARAM = BiocParallel::bpparam())
                standardGeneric("import.HiCPro"))
 
 #' @rdname import.HiCPro
 setMethod(f = "import.HiCPro",
           def = function(matrix.files, bed.files, resolutions, sampleName, genomeBuild = NA,
                          n = 40, drop.chrom = c("chrY", "chrM"), manual.chr = NA, manual.dist = NA,
-                         BPPARAM = BiocParallel::bpparam()){
+                         tempFile = TRUE, BPPARAM = BiocParallel::bpparam()){
               
     # Early fails; more in the chrDistBuild function that will serve globally
     stopifnot(is.character(resolutions))
@@ -70,8 +72,17 @@ setMethod(f = "import.HiCPro",
     collectedRes <- lapply(1:length(resolutions), function(i){
         bed.GRanges <- GRanges(data.frame(
             read_tsv(bed.files[i], col_names = c("chr", "start", "stop", "region"))))
-        dat.long <-read_tsv(matrix.files[i], col_names = c("idx1", "idx2", "region"))
+        matrix.file <- matrix.files[i]
+        if(tempFile){
+            temp <- "tempFile.sparseHiC.txt"
+            cmd <- paste0('awk \'$1+', as.character(n),' >= $2 {print $0}\' ', 
+                          matrix.file, ' > ', temp)
+            system(cmd) 
+            matrix.file <- temp
+        }
         
+        dat.long <-read_tsv(matrix.file, col_names = c("idx1", "idx2", "region"))
+        file.remove(temp)
         list.dat <- bplapply(names(dist), function(chr) {
             Matrix(as.matrix(.matrixBuild.intra(chr, bed.GRanges, dat.long, resolutions[i], dist, n)))
         }, BPPARAM = BPPARAM)
@@ -93,7 +104,8 @@ setMethod(f = "import.HiCPro",
 #' it. All interactions will be preserved including interchromosomal. No values 
 #' can be zeroed out like in the \code{import.HiCPro} function. Not recommended
 #' function to utilize for memory disk concerns but we do support importing the
-#' full data into this framework.
+#' full data into this framework. Additionally, a temporary file cannot be generated
+#' to facilite memory constraints, so this command may fail for high resolution data. 
 #' 
 #' @param matrix.files Paths to .matrix files from Hi-C Pro Output
 #' @param bed.files Paths to .bed files from Hi-C Pro Output
@@ -145,7 +157,8 @@ setMethod(f = "import.HiCPro.full",
     collectedRes <- lapply(1:length(resolutions), function(i){
         bed.GRanges <- GRanges(data.frame(
             read_tsv(bed.files[i], col_names = c("chr", "start", "stop", "region"))))
-        dat.long <-read_tsv(matrix.files[i], col_names = c("idx1", "idx2", "region"))
+        matrix.file <- matrix.files[i]
+        dat.long <-read_tsv(matrix.file, col_names = c("idx1", "idx2", "region"))
         
         olists <- bplapply(names(dist), function(chr1) {
             chr2s <- names(dist[seq.int(match(chr1, names(dist)), length(dist), 1)])

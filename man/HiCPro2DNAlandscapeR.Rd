@@ -8,11 +8,12 @@
 \usage{
 HiCPro2DNAlandscapeR(matrix.files, bed.files, resolutions, sampleName,
   genomeBuild = NA, out.dir = "", drop.chrom = c("chrY", "chrM"),
-  manual.chr = NA, manual.dist = NA, BPPARAM = BiocParallel::bpparam())
+  manual.chr = NA, manual.dist = NA, tempFile = TRUE,
+  BPPARAM = BiocParallel::bpparam())
 
 \S4method{HiCPro2DNAlandscapeR}{ANY}(matrix.files, bed.files, resolutions,
   sampleName, genomeBuild = NA, out.dir = "", drop.chrom = c("chrY",
-  "chrM"), manual.chr = NA, manual.dist = NA,
+  "chrM"), manual.chr = NA, manual.dist = NA, tempFile = TRUE,
   BPPARAM = BiocParallel::bpparam())
 }
 \arguments{
@@ -37,6 +38,9 @@ are suitable, then use the \code{manual.chr} and \code{manual.dist} parameters}
 
 \item{manual.dist}{= NA Specify a same length vector as manual.chr with the 
 chromosomal distances corresponding to each element in the manual.chr}
+
+\item{tempFile}{= TRUE Create a temporary file in Awk to make i/o faster
+and more memory efficient.}
 
 \item{BPPARAM}{= bpparam() Parameters to pass to bplapply}
 }

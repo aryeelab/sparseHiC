@@ -44,7 +44,8 @@ sparseHiCdatum of all chromosomal interactions pairwise
 it. All interactions will be preserved including interchromosomal. No values 
 can be zeroed out like in the \code{import.HiCPro} function. Not recommended
 function to utilize for memory disk concerns but we do support importing the
-full data into this framework.
+full data into this framework. Additionally, a temporary file cannot be generated
+to facilite memory constraints, so this command may fail for high resolution data.
 }
 \examples{
 # matrix.files <- paste(system.file("extdata", package = "processedHiCdata"),
