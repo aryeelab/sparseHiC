@@ -7,14 +7,14 @@
 \title{Export DNAlandscapeR files straight from HiC Pro Output}
 \usage{
 HiCPro2DNAlandscapeR(matrix.files, bed.files, resolutions, sampleName,
-  genomeBuild = NA, out.dir = "", drop.chrom = c("chrY", "chrM"),
-  manual.chr = NA, manual.dist = NA, tempFile = TRUE,
-  BPPARAM = BiocParallel::bpparam())
+  genomeBuild = NA, splitByChr = FALSE, out.dir = "",
+  drop.chrom = c("chrY", "chrM"), manual.chr = NA, manual.dist = NA,
+  tempFile = TRUE, BPPARAM = BiocParallel::bpparam())
 
 \S4method{HiCPro2DNAlandscapeR}{ANY}(matrix.files, bed.files, resolutions,
-  sampleName, genomeBuild = NA, out.dir = "", drop.chrom = c("chrY",
-  "chrM"), manual.chr = NA, manual.dist = NA, tempFile = TRUE,
-  BPPARAM = BiocParallel::bpparam())
+  sampleName, genomeBuild = NA, splitByChr = FALSE, out.dir = "",
+  drop.chrom = c("chrY", "chrM"), manual.chr = NA, manual.dist = NA,
+  tempFile = TRUE, BPPARAM = BiocParallel::bpparam())
 }
 \arguments{
 \item{matrix.files}{Path to .matrix files from Hi-C Pro Output}
@@ -29,6 +29,8 @@ automatically be appended.}
 \item{genomeBuild}{= NA Can specify one of c("hg38", "hg19", "hg18", "mm10", "mm9", "mm8")
 that are built-in options for Hi-C chromosomes and distances. If not of these options
 are suitable, then use the \code{manual.chr} and \code{manual.dist} parameters}
+
+\item{splitByChr}{= FALSE Split .rds files by chromosome for faster i/o in browser?}
 
 \item{out.dir}{= "" The output directory to save the new files}
 
@@ -51,7 +53,10 @@ Will produce two files in the specified out.dir
 \code{HiCPro2DNAlandscapeR} takes the input files from
 HiC Pro output and creates a .rds and a .resolutions.txt
 set of files that can be visualized in
-DNAlandscapeR (dnalandscaper.aryeelab.org).
+DNAlandscapeR (dnalandscaper.aryeelab.org). If
+splitByChr is specified as TRUE, will create a folder with the sample 
+name and an .rds of each chromosome for faster i/o. These split files
+can only be linked via a bucket in DNAlandscapeR.
 }
 \examples{
 #' # matrix.files <- paste(system.file("extdata", package = "processedHiCdata"),

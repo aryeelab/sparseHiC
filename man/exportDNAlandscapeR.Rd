@@ -6,10 +6,11 @@
 \alias{exportDNAlandscapeR,sparseHiCdatum-method}
 \title{Export sparseHiCdatum to DNAlandscapeR files}
 \usage{
-exportDNAlandscapeR(dat, newSampleName = "", out.dir = "")
+exportDNAlandscapeR(dat, newSampleName = "", out.dir = "",
+  splitByChr = FALSE)
 
 \S4method{exportDNAlandscapeR}{sparseHiCdatum}(dat, newSampleName = "",
-  out.dir = "")
+  out.dir = "", splitByChr = FALSE)
 }
 \arguments{
 \item{dat}{A \code{sparseHiCdatum} object}
@@ -18,6 +19,8 @@ exportDNAlandscapeR(dat, newSampleName = "", out.dir = "")
 one in the object is used by default.}
 
 \item{out.dir}{= "" The output directory to save the new files}
+
+\item{splitByChr}{= FALSE  Split .rds files by chromosome for faster i/o in browser?}
 }
 \value{
 Will produce two files in the specified out.dir
@@ -25,7 +28,10 @@ Will produce two files in the specified out.dir
 \description{
 \code{exportDNAlandscapeR} takes a \code{sparseHiCdatum} object
 and produces two files, a .rds and a .resolutions.txt file
-that can be used in DNAlandscapeR (dnalandscaper.aryeelab.org).
+that can be used in DNAlandscapeR (dnalandscaper.aryeelab.org). If
+splitByChr is specified as TRUE, will create a folder with the sample 
+name and an .rds of each chromosome for faster i/o. These split files
+can only be linked via a bucket in DNAlandscapeR.
 }
 \examples{
 # Computing normalizing factors from the full ChIA-PET Data
