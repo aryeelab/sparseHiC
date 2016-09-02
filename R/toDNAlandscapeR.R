@@ -25,7 +25,8 @@ NULL
 #' #"HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_abs.bed", sep = "/")
 #' genomeBuild <- "hg19"
 #' resolutions <- "1000000"
-#' #HiCPro2DNAlandscapeR(matrix.files, bed.files, resolutions, sampleName = "hESC1", genomeBuild, splitByChr = TRUE)
+#' #exportDNAlandscapeR(matrix.files, bed.files, resolutions,
+#' #sampleName = "hESC1", genomeBuild, splitByChr = TRUE)
 
 
 #' @export
@@ -110,7 +111,8 @@ setMethod("exportDNAlandscapeR", c("sparseHiCdatum"), function(dat, newSampleNam
 #' resolutions <- "1000000"
 #' sampleName = "hESC1"
 #' #HiCPro2DNAlandscapeR(matrix.files, bed.files, resolutions, sampleName = "hESC1", genomeBuild)
-#' #HiCPro2DNAlandscapeR(matrix.files, bed.files, resolutions, sampleName = "hESC1", genomeBuild, splitByChr = TRUE)
+#' #HiCPro2DNAlandscapeR(matrix.files, bed.files, resolutions,
+#' #sampleName = "hESC1", genomeBuild, splitByChr = TRUE)
 
 #' @export
 setGeneric(name = "HiCPro2DNAlandscapeR", 

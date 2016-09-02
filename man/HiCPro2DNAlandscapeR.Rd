@@ -67,6 +67,7 @@ genomeBuild <- "hg19"
 resolutions <- "1000000"
 sampleName = "hESC1"
 #HiCPro2DNAlandscapeR(matrix.files, bed.files, resolutions, sampleName = "hESC1", genomeBuild)
-
+#HiCPro2DNAlandscapeR(matrix.files, bed.files, resolutions,
+#sampleName = "hESC1", genomeBuild, splitByChr = TRUE)
 }
 

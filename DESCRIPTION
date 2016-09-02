@@ -1,8 +1,8 @@
 Package: sparseHiC
 Type: Package
 Title: Efficient parallelized compression of Hi-C Data
-Version: 0.2.0
-Date: 2016-08-25
+Version: 0.3.0
+Date: 2016-09-02
 Authors@R: c(
     person("Caleb", "Lareau", email = "caleblareau@g.harvard.edu", role = c("aut", "cre")),
     person("Martin", "Aryee", email = "aryee.martin@mgh.harvard.edu", role = "aut")
@@ -37,5 +37,7 @@ Collate:
     'sparseHiC-class.R'
     'coreCompress.R'
     'hicpro.R'
-    'primitive.R'
     'toDNAlandscapeR.R'
+    'AWS.R'
+    'access.R'
+    'primitive.R'

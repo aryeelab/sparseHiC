@@ -74,7 +74,7 @@ setMethod(f = "import.HiCPro",
             read_tsv(bed.files[i], col_names = c("chr", "start", "stop", "region"))))
         matrix.file <- matrix.files[i]
         if(tempFile){
-            temp <- "tempFile.sparseHiC.txt"
+            temp <- paste0(sampleName, ".tempFile.sparseHiC.txt")
             cmd <- paste0('awk \'$1+', as.character(n),' >= $2 {print $0}\' ', 
                           matrix.file, ' > ', temp)
             system(cmd) 

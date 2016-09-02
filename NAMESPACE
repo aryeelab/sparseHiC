@@ -2,6 +2,10 @@
 
 export(HiCPro2DNAlandscapeR)
 export(exportDNAlandscapeR)
+export(getChromosome)
+export(getHiCMatrix)
+export(getResolution)
+export(getSampleFromBucket)
 export(import.HiCPro)
 export(import.HiCPro.full)
 exportClasses(sparseHiCdata)

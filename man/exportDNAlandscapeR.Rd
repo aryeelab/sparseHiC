@@ -34,7 +34,13 @@ name and an .rds of each chromosome for faster i/o. These split files
 can only be linked via a bucket in DNAlandscapeR.
 }
 \examples{
-# Computing normalizing factors from the full ChIA-PET Data
+# matrix.files <- paste(system.file("extdata", package = "processedHiCdata"),
+#"HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_iced.matrix", sep = "/")
+#bed.files <- paste(system.file("extdata", package = "processedHiCdata"),
+#"HiC-Pro/hESC_Rep1/hESC_Rep1_1000000_abs.bed", sep = "/")
 genomeBuild <- "hg19"
+resolutions <- "1000000"
+#exportDNAlandscapeR(matrix.files, bed.files, resolutions,
+#sampleName = "hESC1", genomeBuild, splitByChr = TRUE)
 }
 
