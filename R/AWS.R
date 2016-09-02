@@ -73,5 +73,34 @@ setMethod("getSampleFromBucket", def= function(sample, bucket, chr = NA, organis
     return(z)
 })
 
+#' @include toDNAlandscapeR.R
+NULL
 
+#' List Available Hi-C Samples from an AWS Bucket
+#'
+#' \code{samplesInBucket} returns a character vector of the samples
+#' that can be imported from the specified bucket. Should also specify
+#' the organism.
+#'
+#' @param bucket name of the AWS bucket (all lower case)
+#' @importFrom aws.s3 get_bucket
+#'
+#' @examples
+#' samplesInBucket("dnalandscaper")
 
+#' @export
+setGeneric(name = "samplesInBucket", def = function(bucket)
+    standardGeneric("samplesInBucket"))
+
+#' @rdname samplesInBucket
+setMethod("samplesInBucket", signature("character"),
+          definition = function(bucket) {
+              t <- unlist(get_bucket(bucket = bucket))
+              full <- t[grepl("hic", t) & grepl("resolutions.txt", t)]
+              t2 <- unlist(strsplit(full, split = "-HiC"))
+              return(sapply(strsplit(t2[!grepl("resolutions.txt", t2)], "/"), function(sample){
+                  v <- sample[4]
+                  names(v) <- sample[2]
+                  v
+              }))
+          })
