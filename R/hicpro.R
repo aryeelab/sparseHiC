@@ -44,7 +44,8 @@ NULL
 #' @import Matrix
 #' @importFrom BiocParallel bplapply
 #' @importFrom readr read_tsv
-#' @importFrom reshape2 dcast
+#' @importFrom reshape2 acast dcast
+#' @importFrom stats aggregate
 
 #' @export
 setGeneric(name = "import.HiCPro",
@@ -82,7 +83,7 @@ setMethod(f = "import.HiCPro",
         }
         
         dat.long <-read_tsv(matrix.file, col_names = c("idx1", "idx2", "region"))
-        file.remove(temp)
+        if(tempFile) file.remove(temp)
         list.dat <- bplapply(names(dist), function(chr) {
             Matrix(as.matrix(.matrixBuild.intra(chr, bed.GRanges, dat.long, resolutions[i], dist, n)))
         }, BPPARAM = BPPARAM)

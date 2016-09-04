@@ -32,7 +32,7 @@ are suitable, then use the \code{manual.chr} and \code{manual.dist} parameters}
 
 \item{splitByChr}{= FALSE Split .rds files by chromosome for faster i/o in browser?}
 
-\item{out.dir}{= "" The output directory to save the new files}
+\item{out.dir}{= "" The output directory to save the new tarball}
 
 \item{drop.chrom}{= c("chrY", "chrM") Chromosomes dropped from compression}
 

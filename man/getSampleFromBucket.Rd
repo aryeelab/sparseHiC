@@ -37,6 +37,6 @@ to import the bucket.
 \examples{
 # Import chromosome 4 from DNAlandscapeR bucket
 samp <- "hESC1"
-#hesc <- getSampleFromBucket(samp, "dnalandscaper2", c("chr1", "chr4"))
+# hesc <- getSampleFromBucket(samp, "dnalandscaper2", c("chr1", "chr4"))
 }
 

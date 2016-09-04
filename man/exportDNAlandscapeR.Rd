@@ -18,7 +18,7 @@ exportDNAlandscapeR(dat, newSampleName = "", out.dir = "",
 \item{newSampleName}{= "" New sample name for the object, if desired. Current
 one in the object is used by default.}
 
-\item{out.dir}{= "" The output directory to save the new files}
+\item{out.dir}{= "" The output directory to save the new tarball}
 
 \item{splitByChr}{= FALSE  Split .rds files by chromosome for faster i/o in browser?}
 }

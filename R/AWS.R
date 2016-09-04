@@ -22,7 +22,7 @@ NULL
 #' @examples
 #' # Import chromosome 4 from DNAlandscapeR bucket
 #' samp <- "hESC1"
-#' #hesc <- getSampleFromBucket(samp, "dnalandscaper2", c("chr1", "chr4"))
+#' # hesc <- getSampleFromBucket(samp, "dnalandscaper2", c("chr1", "chr4"))
 
 #' @export
 setGeneric(name = "getSampleFromBucket", def = function(sample, bucket, chr = NA, organism = "human")
@@ -86,7 +86,7 @@ NULL
 #' @importFrom aws.s3 get_bucket
 #'
 #' @examples
-#' samplesInBucket("dnalandscaper")
+#' # samplesInBucket("dnalandscaper")
 
 #' @export
 setGeneric(name = "samplesInBucket", def = function(bucket)
@@ -95,7 +95,7 @@ setGeneric(name = "samplesInBucket", def = function(bucket)
 #' @rdname samplesInBucket
 setMethod("samplesInBucket", signature("character"),
           definition = function(bucket) {
-              t <- unlist(get_bucket(bucket = bucket))
+              t <- unlist(aws.s3::get_bucket(bucket = bucket))
               full <- t[grepl("hic", t) & grepl("resolutions.txt", t)]
               t2 <- unlist(strsplit(full, split = "-HiC"))
               return(sapply(strsplit(t2[!grepl("resolutions.txt", t2)], "/"), function(sample){

@@ -19,6 +19,6 @@ that can be imported from the specified bucket. Should also specify
 the organism.
 }
 \examples{
-samplesInBucket("dnalandscaper")
+# samplesInBucket("dnalandscaper")
 }
 

@@ -43,6 +43,7 @@ NULL
     cur.chrom <- bed.GRanges[seqnames(bed.GRanges) == chr]
     vals <-  mcols(cur.chrom)$region 
     dat.chrom <- dat.long[dat.long$idx1 %in% vals & dat.long$idx2 %in% vals, ]
+    dat.chrom$region[abs(dat.chrom$idx1 - dat.chrom$idx2) > n] <- 0
     starts <- start(cur.chrom)
     names(starts) <- vals
     dat.chrom$idx1 <- starts[as.character(dat.chrom$idx1)]
@@ -54,15 +55,9 @@ NULL
     zeros.long <- rbind(zeros.long, cbind(bins, bins, 0))
     colnames(zeros.long) <- c("idx1", "idx2", "region")
 
-    mat.chrom <- dcast(data = rbind(dat.chrom, zeros.long), formula = idx2 ~ idx1,
-                       value.var = "region", fill = 0, fun.aggregate = sum)
-    row.names(mat.chrom) <- as.character(format(mat.chrom[, 1], scientific = FALSE))
-    mat.chrom <- mat.chrom[, -1]
+    return(reshape2::acast(data = rbind(dat.chrom, zeros.long), formula = idx2 ~ idx1,
+                       value.var = "region", fill = 0, fun.aggregate = sum))
     
-    i <- dim(mat.chrom)[1]
-    j <- dim(mat.chrom)[2]
-    if (n > 0){for (k in 1:i) mat.chrom[(k + n):j, k] <- 0} 
-    mat.chrom <- mat.chrom[1:i, 1:j]
 }
 
 # Modification of function above to do two chromosomes instead of just one
@@ -86,8 +81,44 @@ NULL
     zeros.long <- cbind(expand.grid(bins1,bins2), 0)
     colnames(zeros.long) <- c("idx1", "idx2", "region")
 
-    mat.chrom <- dcast(data = rbind(dat.chrom, zeros.long), formula = idx2 ~ idx1,
-                       value.var = "region", fill = 0, fun.aggregate = sum)
-    row.names(mat.chrom) <- as.character(format(mat.chrom[, 1], scientific = FALSE))
-    mat.chrom <- mat.chrom[, -1]
+    return(acast(data = rbind(dat.chrom, zeros.long), formula = idx2 ~ idx1,
+                       value.var = "region", fill = 0, fun.aggregate = sum))
+}
+
+# Internal function for library normalization
+# Takes a list of sparse matricies and returns the same list
+
+.libraryNormHiC <- function(losm){
+    options(scipen=999)
+    
+    # Set up long matrix to get the differences
+    all <- summary(Reduce("+", losm))
+    counts <- sapply(losm, function(m){ as.matrix(m[cbind(all$i, all$j)])})
+    long <- data.matrix(cbind(as.numeric(colnames(losm[[1]])[all$i]), as.numeric(colnames(losm[[1]])[all$j]), counts))
+    diff <- abs(long[,1] - long[,2])
+    longdiff <- cbind(long, diff)
+    colnames(longdiff) <- c("idx1", "idx2", paste0("s", seq(1, length(losm), 1)), "diff")
+
+    # Infer resolution and max size
+    res <- min(diff[diff > 0])
+    ma <- max(c(long[,1], long[,2]))
+    
+    # Aggregate and append means
+    m <- aggregate(x = longdiff, by = list(longdiff[,6]), FUN = "mean")
+    scaled <- m[,4:(3 + length(losm))]/rowMeans(m[,4:(3 + length(losm))])
+    mlo <- data.frame(cbind(diff = m[,4 + length(losm)], scaled))
+    ldm <- merge(longdiff, mlo, by.x = c("diff"), by.y = c("diff"))
+    
+    # Make long zeros matrix
+    bins <- seq(0, ma, res)
+    zeros.long <- cbind(t(combn(bins, 2)), 0)
+    zeros.long <- rbind(zeros.long, cbind(bins, bins, 0))
+    colnames(zeros.long) <- c("idx1", "idx2", "val")
+    
+    # Apply transform and make new list
+    dat <- lapply(1:(length(losm)), function(i){
+        a <- data.frame(cbind(idx1=ldm[,2], idx2=ldm[,3], val=ldm[,i+3]/ldm[,i+3+length(losm)]))
+        Matrix(reshape2::acast(rbind(a, zeros.long), formula = idx2 ~ idx1, value.var = "val", fill = 0, fun.aggregate = sum))
+    })
+    return(dat)
 }
