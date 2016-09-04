@@ -26,7 +26,10 @@ and returns a single matrix. Thus, the length of chr
 and res must be 1
 }
 \examples{
-chr <- "chr7"
+chr <- "chr21"
 res <- "1000000"
+rds<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
+hESCdatum1 <- readRDS(rds)
+r <- getHiCMatrix(hESCdatum1,chr = chr, res = res) 
 }
 

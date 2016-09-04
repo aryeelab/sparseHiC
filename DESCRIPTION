@@ -14,6 +14,7 @@ Description: A set of functions to compress output from common
     sparse matrices for further downstream analyses.
 Imports:
     methods,
+    BiocGenerics,
     BiocParallel,
     GenomicRanges,
     gsubfn,
@@ -37,6 +38,7 @@ NeedsCompilation: no
 Collate:
     'sparseHiC.R'
     'sparseHiC-class.R'
+    'coreHelp.R'
     'coreCompress.R'
     'hicpro.R'
     'toDNAlandscapeR.R'

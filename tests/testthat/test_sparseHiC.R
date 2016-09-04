@@ -16,3 +16,17 @@ test_that("We get a list of 23 chromosomes and the matrix is square for chromoso
     expect_equal(dim(x@resolutionNamedList[[1]][[1]])[1], 250)
 })
 
+context("Primitive Sample Addition")
+
+test_that("Associative property of S4 data holds", {
+    rdsA<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
+    hESCdatum1 <- readRDS(rdsA)
+    rdsB<-paste(system.file('rds',package='sparseHiC'),'hESCdatum2.rds',sep='/')
+    hESCdatum2 <- readRDS(rdsB)
+    rdsC<-paste(system.file('rds',package='sparseHiC'),'IMR90datum1.rds',sep='/')
+    IMR90datum1 <- readRDS(rdsC)
+    hESCdata <- hESCdatum1 + hESCdatum2
+    threeA <- IMR90datum1 + hESCdata
+    threeB <-  IMR90datum1 + hESCdatum1 + hESCdatum2
+    expect_equal(threeA, threeB)
+})

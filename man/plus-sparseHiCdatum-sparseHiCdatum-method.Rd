@@ -2,15 +2,40 @@
 % Please edit documentation in R/primitive.R
 \docType{methods}
 \name{+,sparseHiCdatum,sparseHiCdatum-method}
+\alias{+,sparseHiCdata,sparseHiCdata-method}
+\alias{+,sparseHiCdata,sparseHiCdatum-method}
+\alias{+,sparseHiCdatum,sparseHiCdata-method}
 \alias{+,sparseHiCdatum,sparseHiCdatum-method}
+\alias{combine,sparseHiCdata,sparseHiCdata-method}
+\alias{combine,sparseHiCdata,sparseHiCdatum-method}
+\alias{combine,sparseHiCdatum,sparseHiCdata-method}
+\alias{combine,sparseHiCdatum,sparseHiCdatum-method}
 \title{Combining together multiple Hi-C Samples}
 \usage{
 \S4method{+}{sparseHiCdatum,sparseHiCdatum}(e1, e2)
+
+\S4method{+}{sparseHiCdata,sparseHiCdata}(e1, e2)
+
+\S4method{+}{sparseHiCdatum,sparseHiCdata}(e1, e2)
+
+\S4method{+}{sparseHiCdata,sparseHiCdatum}(e1, e2)
+
+\S4method{combine}{sparseHiCdatum,sparseHiCdatum}(x, y)
+
+\S4method{combine}{sparseHiCdata,sparseHiCdata}(x, y)
+
+\S4method{combine}{sparseHiCdatum,sparseHiCdata}(x, y)
+
+\S4method{combine}{sparseHiCdata,sparseHiCdatum}(x, y)
 }
 \arguments{
 \item{e1}{A sparseHiCdatum object}
 
 \item{e2}{A sparseHiCdatum object}
+
+\item{x}{A sparseHiCdatum object}
+
+\item{y}{A sparseHiCdatum object}
 }
 \value{
 A sparseHiCdatum/data object depending on if joining multiple samples
@@ -20,5 +45,17 @@ First, we check if the resolutions are different but the sample
 is the same. If so, then we append the new resolution, returning a
 sparseHiCdatum object. If not, then we append it as a new sample.
 The metaData handling is designed for functionality, not inclusiveness.
+}
+\examples{
+rdsA<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
+hESCdatum1 <- readRDS(rdsA)
+rdsB<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
+hESCdatum2 <- readRDS(rdsB)
+rdsC<-paste(system.file('rds',package='sparseHiC'),'IMR90datum1.rds',sep='/')
+IMR90datum1 <- readRDS(rdsC)
+hESCdata <- hESCdatum1 + hESCdatum2
+threeA <- IMR90datum1 + hESCdata
+threeB <- hESCdata + IMR90datum1
+
 }
 

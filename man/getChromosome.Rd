@@ -29,6 +29,9 @@ length of chr > 1 (multiple chromosomes), then
 a list of lists will be returned if a.list is TRUE
 }
 \examples{
-chr <- "chr7"
+chr <- "chr21"
+rds<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
+hESCdatum1 <- readRDS(rds)
+r <- getChromosome(hESCdatum1,chr = chr, a.list = FALSE) 
 }
 

@@ -16,6 +16,9 @@ NULL
 #'
 #' @examples
 #' resolutions <- "1000000"
+#' rds<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
+#' hESCdatum1 <- readRDS(rds)
+#' r <- getResolution(hESCdatum1, resolutions, a.list = FALSE) #trivial
 
 #' @export
 setGeneric(name = "getResolution", def = function(obj, res, a.list = TRUE)
@@ -51,7 +54,10 @@ setMethod("getResolution", signature("sparseHiCdatum", "ANY", "ANY"),
 #' @return Returns object subsetted by resolution
 #'
 #' @examples
-#' chr <- "chr7"
+#' chr <- "chr21"
+#' rds<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
+#' hESCdatum1 <- readRDS(rds)
+#' r <- getChromosome(hESCdatum1,chr = chr, a.list = FALSE) 
 
 #' @export
 setGeneric(name = "getChromosome", def = function(obj, chr, a.list = TRUE)
@@ -90,8 +96,11 @@ setMethod("getChromosome", signature("sparseHiCdatum","character", "ANY"),
 #' @return Returns a Hi-C Matrix
 #'
 #' @examples
-#' chr <- "chr7"
+#' chr <- "chr21"
 #' res <- "1000000"
+#' rds<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
+#' hESCdatum1 <- readRDS(rds)
+#' r <- getHiCMatrix(hESCdatum1,chr = chr, res = res) 
 
 #' @export
 setGeneric(name = "getHiCMatrix", def = function(obj, chr, res)

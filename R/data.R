@@ -44,6 +44,27 @@ NULL
 #' saveRDS(hESCdatum2, "inst/rds/hESCdatum2.rds")
 "hESCdatum2"
 
+#' IMR90 Sample
+#'
+#' A sparseHiCdatum object from the IMR90 replicate1
+#'
+#' @format A small loops object 
+#' \describe{
+#'   \item{sampleName}{IMR90_1}
+#'   \item{resolutionNamedList}{1Mb with chr20-22 }
+#'   \item{metaData}{Shows alignment to hg19}
+#' }
+#' @return A sparseHiCdatum
+#' @source # IMR90_1
+#' matrix.files <- paste(system.file("extdata", package = "processedHiCdata"),
+#' "HiC-Pro/hIMR90_Rep1/hIMR90_Rep1_1000000_iced.matrix", sep = "/")
+#' bed.files <- paste(system.file("extdata", package = "processedHiCdata"),
+#' "HiC-Pro/hIMR90_Rep1/hIMR90_Rep1_1000000_abs.bed", sep = "/")
+#' i1 <- import.HiCPro(matrix.files, bed.files, resolutions, sampleName = "IMR90_1", genomeBuild)
+#' IMR90datum1 <- getChromosome(i1, c("chr20", "chr21", "chr22"), FALSE)
+#' saveRDS(IMR90datum1, "inst/rds/IMR90datum1.rds")
+"IMR90datum1"
+
 #' hESC Samples
 #'
 #' A sparseHiCdata object for both the ESC replicates

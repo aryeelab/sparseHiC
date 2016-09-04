@@ -28,5 +28,8 @@ returned, then the names are the chromosomes.
 }
 \examples{
 resolutions <- "1000000"
+rds<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
+hESCdatum1 <- readRDS(rds)
+r <- getResolution(hESCdatum1, resolutions, a.list = FALSE) #trivial
 }
 
