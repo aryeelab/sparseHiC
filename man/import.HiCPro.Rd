@@ -55,6 +55,10 @@ it. Only intrachromosomal interactions will be preserved.
 Supply three vectors of equivalent length; one specifies the location
 of the .matrix files, one the location of the .bed files, and one
 the resolution of the samples for each element in that order.
+
+This only works for one sample. Apply the function over multiple samples
+and then combine with the \code{combine} function to make a single object
+with multiple samples.
 }
 \examples{
 # matrix.files <- paste(system.file("extdata", package = "processedHiCdata"),

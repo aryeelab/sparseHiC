@@ -1,3 +1,4 @@
+
 #' @include toDNAlandscapeR.R
 NULL
 
@@ -83,7 +84,8 @@ NULL
 #' the organism.
 #'
 #' @param bucket name of the AWS bucket (all lower case)
-#' @importFrom aws.s3 get_bucket
+#' @importFrom gsubfn strapplyc
+#' @importFrom RCurl getURL
 #'
 #' @examples
 #' # samplesInBucket("dnalandscaper")
@@ -95,12 +97,16 @@ setGeneric(name = "samplesInBucket", def = function(bucket)
 #' @rdname samplesInBucket
 setMethod("samplesInBucket", signature("character"),
           definition = function(bucket) {
-              t <- unlist(aws.s3::get_bucket(bucket = bucket))
+              t <- gsubfn::strapplyc(RCurl::getURL((paste0("https://s3.amazonaws.com/", bucket))), "<Key>(.*?)</Key>", simplify = c)
               full <- t[grepl("hic", t) & grepl("resolutions.txt", t)]
-              t2 <- unlist(strsplit(full, split = "-HiC"))
-              return(sapply(strsplit(t2[!grepl("resolutions.txt", t2)], "/"), function(sample){
-                  v <- sample[4]
-                  names(v) <- sample[2]
-                  v
-              }))
+              if(length(full) > 0){
+                  t2 <- unlist(strsplit(full, split = "-HiC"))
+                  return(sapply(strsplit(t2[!grepl("resolutions.txt", t2)], "/"), function(sample){
+                      v <- sample[4]
+                      names(v) <- sample[2]
+                      return(v)
+                  }))
+              } else {
+                  return("none")
+              }
           })

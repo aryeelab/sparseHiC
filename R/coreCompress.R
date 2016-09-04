@@ -101,7 +101,7 @@ NULL
 
     # Infer resolution and max size
     res <- min(diff[diff > 0])
-    ma <- max(c(long[,1], long[,2]))
+    ma <- res * (dim(losm[[1]])[1]-1)
     
     # Aggregate and append means
     m <- aggregate(x = longdiff, by = list(longdiff[,6]), FUN = "mean")

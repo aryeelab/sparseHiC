@@ -27,7 +27,7 @@ Will produce two files in the specified out.dir
 }
 \description{
 \code{exportDNAlandscapeR} takes a \code{sparseHiCdatum} object
-and produces two files, a .rds and a .resolutions.txt file
+and produces two files, a .rds and a .sparseHiC.meta file
 that can be used in DNAlandscapeR (dnalandscaper.aryeelab.org). If
 splitByChr is specified as TRUE, will create a folder with the sample 
 name and an .rds of each chromosome for faster i/o. These split files

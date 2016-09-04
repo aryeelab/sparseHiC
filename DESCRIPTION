@@ -14,10 +14,11 @@ Description: A set of functions to compress output from common
     sparse matrices for further downstream analyses.
 Imports:
     methods,
-    aws.s3,
     BiocParallel,
     GenomicRanges,
+    gsubfn,
     Matrix,
+    RCurl,
     readr,
     reshape2,
     utils

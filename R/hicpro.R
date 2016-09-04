@@ -10,6 +10,10 @@ NULL
 #' of the .matrix files, one the location of the .bed files, and one
 #' the resolution of the samples for each element in that order. 
 #' 
+#' This only works for one sample. Apply the function over multiple samples
+#' and then combine with the \code{combine} function to make a single object
+#' with multiple samples.
+#' 
 #' @param matrix.files Path to .matrix files from Hi-C Pro Output
 #' @param bed.files Path to .bed files from Hi-C Pro Output
 #' @param resolutions Character vector of the resolutions of the Hi-C output

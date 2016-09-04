@@ -20,7 +20,7 @@ setMethod("+", signature(e1 = "sparseHiCdatum", e2 = "sparseHiCdatum"),
     if(e1@sampleName == e2@sampleName &
        names(e1@resolutionNamedList) == names(e2@resolutionNamedList &
        names(e1@resolutionNamedList[[1]]) == names(e2@resolutionNamedList[[1]]) )){
-            stop("No distinct sample names, resolutions, or chromosomes being joined together")
+            stop("No distinct sample names, resolutions, or chromosomes being combined together")
     }
               
     if(e1@sampleName == e2@sampleName){ # Adding resolutions to the same sample
