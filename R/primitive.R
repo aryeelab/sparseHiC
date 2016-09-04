@@ -1,7 +1,29 @@
+# Simply a resolution named list slot
+# such that a minimal data hierarchy is present
+.cleanResolutionNamedList <- function(rnl){
+    datflat <- unlist(rnl)
+    ndf <- names(datflat)
+    
+    # Remove duplicates
+    d <- duplicated(ndf)
+    ndf <- ndf[!d]
+    datflat <- datflat[!d]
+    
+    res <- unique(sapply(strsplit(ndf, split = "\\."), "[[", 1))
+    lo  <- lapply(res, function(r){
+        d <- datflat[grepl(paste0(r, "."), ndf)]
+        names <- sapply(strsplit(ndf[grepl(paste0(r, "."), ndf)], split = "\\."), "[[", 2)
+        names(d) <- names
+        d
+    })
+    names(lo) <- res
+    return(lo)
+}
+
 #' @include coreCompress.R
 NULL
 
-#' Link together multiple Hi-C Samples
+#' Combining together multiple Hi-C Samples
 #' 
 #' First, we check if the resolutions are different but the sample
 #' is the same. If so, then we append the new resolution, returning a
@@ -17,9 +39,9 @@ setMethod("+", signature(e1 = "sparseHiCdatum", e2 = "sparseHiCdatum"),
           definition = function(e1, e2) {
               
     #Basic Error Handling
-    if(e1@sampleName == e2@sampleName &
-       names(e1@resolutionNamedList) == names(e2@resolutionNamedList &
-       names(e1@resolutionNamedList[[1]]) == names(e2@resolutionNamedList[[1]]) )){
+    if((e1@sampleName == e2@sampleName) &&
+       (names(e1@resolutionNamedList) == names(e2@resolutionNamedList)) &&
+       (names(e1@resolutionNamedList[[1]]) == names(e2@resolutionNamedList[[1]]))){
             stop("No distinct sample names, resolutions, or chromosomes being combined together")
     }
               

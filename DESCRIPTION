@@ -42,4 +42,5 @@ Collate:
     'toDNAlandscapeR.R'
     'AWS.R'
     'access.R'
+    'data.R'
     'primitive.R'

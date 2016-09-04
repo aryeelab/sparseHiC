@@ -1,7 +1,6 @@
 #' @include sparseHiC.R
 NULL
 
-
 check_hic <- function(object) {
     errors <- character()
     names <- names(object@resolutionNamedList)
@@ -66,3 +65,5 @@ sparseHiCdata <- setClass("sparseHiCdata",
                            slots = c(HiCSamplesList = "list", 
                                      metaData = "data.frame"),
                            validity = check_hic_samples)
+
+

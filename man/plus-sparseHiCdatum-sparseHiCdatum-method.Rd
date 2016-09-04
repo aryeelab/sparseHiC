@@ -3,7 +3,7 @@
 \docType{methods}
 \name{+,sparseHiCdatum,sparseHiCdatum-method}
 \alias{+,sparseHiCdatum,sparseHiCdatum-method}
-\title{Link together multiple Hi-C Samples}
+\title{Combining together multiple Hi-C Samples}
 \usage{
 \S4method{+}{sparseHiCdatum,sparseHiCdatum}(e1, e2)
 }
