@@ -92,24 +92,41 @@ setMethod("getChromosome", signature("sparseHiCdatum","character", "ANY"),
 #' @param obj A \code{sparseHiCdatum} object
 #' @param chr Chromosome desired
 #' @param res Resolution desired
+#' @param sampleName When accessing a matrix with multiple
+#' samples in the object
 #'
 #' @return Returns a Hi-C Matrix
 #'
 #' @examples
 #' chr <- "chr21"
 #' res <- "1000000"
+#' 
+#' #Single sample
 #' rds<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
 #' hESCdatum1 <- readRDS(rds)
 #' r <- getHiCMatrix(hESCdatum1,chr = chr, res = res) 
+#' 
+#' rdsA<-paste(system.file('rds',package='sparseHiC'),'hESCdata.rds',sep='/')
+#' hESCdata <- readRDS(rdsA)
+#' getHiCMatrix(hESCdata, chr = chr, res = res, sampleName = "hESC2") 
 
 #' @export
-setGeneric(name = "getHiCMatrix", def = function(obj, chr, res)
+setGeneric(name = "getHiCMatrix", def = function(obj, chr, res, sampleName)
     standardGeneric("getHiCMatrix"))
 
 #' @rdname getHiCMatrix
-setMethod("getHiCMatrix", signature("sparseHiCdatum", "ANY", "ANY"),
-          definition = function(obj, chr, res) {
+setMethod("getHiCMatrix", signature("sparseHiCdatum", "ANY", "ANY", "ANY"),
+          definition = function(obj, chr, res, sampleName) {
               stopifnot(length(chr) == 1)
               stopifnot(length(res) == 1)
               return(obj@resolutionNamedList[[res]][[chr]])
+})
+
+#' @rdname getHiCMatrix
+setMethod("getHiCMatrix", signature("sparseHiCdata", "ANY", "ANY", "ANY"),
+          definition = function(obj, chr, res, sampleName) {
+              stopifnot(length(chr) == 1)
+              stopifnot(length(res) == 1)
+              stopifnot(length(sampleName) == 1)
+              return(obj@HiCSamplesList[[sampleName]]@resolutionNamedList[[res]][[chr]])
 })

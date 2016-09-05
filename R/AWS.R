@@ -1,7 +1,6 @@
-
 #' @include toDNAlandscapeR.R
 NULL
-
+    
 #' Import HiC Sample from AWS Bucket
 #'
 #' \code{getSampleFromBucket} returns a \code{sparseHiCdatum} object
@@ -31,32 +30,40 @@ setGeneric(name = "getSampleFromBucket", def = function(sample, bucket, chr = NA
 
 #' @rdname getSampleFromBucket
 setMethod("getSampleFromBucket", def= function(sample, bucket, chr = NA, organism = "human") {
-    base <- paste0("https://s3.amazonaws.com/", bucket, "/data/", organism, "/hic/", sample, "-HiC")
-    resFile <- paste0(base, ".resolutions.txt")
+    if(length(sample) > 1) stop("use getSamplesFromBucket (plural) to get multiple samples from the same bucket")
+    extURL <- paste0("data/", organism, "/hic/", sample, "-HiC/", sample, "-HiC")
+    base <- paste0("https://s3.amazonaws.com/", bucket, "/", extURL)
+    resFile <- paste0(base, ".sparseHiC.meta")
     chrSplit <- as.logical(strsplit(as.character(read.table(resFile, skip = 2)[1,]), split = "=")[[1]][2])
     
     if(chrSplit){ # Separate chromosome
         
-        if(!all(is.na(chr))){ # Return specific chromosomes
-            md <- data.frame()
-            dat <- lapply(chr, function(ct){
-                xcon <- gzcon(url(paste0(base, "/", sample, "-HiC", "-", ct, ".rds")))
-                z <- readRDS(xcon); close(xcon)
-                md <- z@metaData
-                z@resolutionNamedList
-            })   
-            datflat <- unlist(dat)
-            ndf <- names(datflat)
-            res <- unique(sapply(strsplit(ndf, split = "\\."), "[[", 1))
-            lo  <- lapply(res, function(r){
-                d <- datflat[grepl(paste0(r, "."), ndf)]
-                names <- sapply(strsplit(ndf[grepl(paste0(r, "."), ndf)], split = "\\."), "[[", 2)
-                names(d) <- names
-                d
-            })
-            names(lo) <- res
-            obj <- new("sparseHiCdatum", sampleName = sample, resolutionNamedList = lo, metaData = md)
+        # User didn't define chromosomes, so import them all
+        if(all(is.na(chr))) {
+            t <- gsubfn::strapplyc(RCurl::getURL((paste0("https://s3.amazonaws.com/", bucket))), "<Key>(.*?)</Key>", simplify = c)
+            chr <- sapply(strsplit(t[grepl(extURL,t) & grepl(".rds", t) & grepl("chr",t)], split = extURL),
+                   function(hit){ strsplit(strsplit(hit[[2]], ".rds")[[1]], "-")[[1]][2] })
+            chr <- .chrOrder(chr)
         }
+            
+        md <- data.frame()
+        dat <- lapply(chr, function(ct){
+            xcon <- gzcon(url(paste0(base, "-", ct, ".rds")))
+            z <- readRDS(xcon); close(xcon)
+            md <- z@metaData
+            z@resolutionNamedList
+        })   
+        datflat <- unlist(dat)
+        ndf <- names(datflat)
+        res <- unique(sapply(strsplit(ndf, split = "\\."), "[[", 1))
+        lo  <- lapply(res, function(r){
+            d <- datflat[grepl(paste0(r, "."), ndf)]
+            names <- sapply(strsplit(ndf[grepl(paste0(r, "."), ndf)], split = "\\."), "[[", 2)
+            names(d) <- names
+            d
+        })
+        names(lo) <- res
+        obj <- new("sparseHiCdatum", sampleName = sample, resolutionNamedList = lo, metaData = md)
         
     } else { # Bound together
         
@@ -71,11 +78,39 @@ setMethod("getSampleFromBucket", def= function(sample, bucket, chr = NA, organis
             obj <- new("sparseHiCdatum", sampleName = sample, resolutionNamedList = lo, metaData = z@metaData)
         }
     }
-    return(z)
+    return(obj)
 })
 
-#' @include toDNAlandscapeR.R
-NULL
+#' Import multiple Hi-C samples from AWS Bucket
+#'
+#' \code{getSamplesFromBucket} returns a \code{sparseHiCdata} object
+#' when the user specifies multiple sample names present in the bucket
+#'
+#' @param samples The names of the samples 
+#' @param bucket Name of the AWS bucket. 
+#' @param chr = NA Specify which chromosomes to pull down; if left with
+#' NA, then by default, all chromosomes will be pulled down
+#' @param organism = "human" or "mouse" likely supported
+#' @return A sparseHiCdata object
+#'
+#' @examples
+#' # Import chromosome 4 from DNAlandscapeR bucket
+#' samples <- c("GM12878", "IMR90")
+#' # two <- getSamplesFromBucket(samples, "dnalandscaper", c("chr1", "chr4"))
+
+#' @export
+setGeneric(name = "getSamplesFromBucket", def = function(samples, bucket, chr = NA, organism = "human")
+    standardGeneric("getSamplesFromBucket"))
+
+#' @rdname getSamplesFromBucket
+setMethod("getSamplesFromBucket", def= function(samples, bucket, chr = NA, organism = "human") {
+    lo <- lapply(samples, function(sample) getSampleFromBucket(sample, bucket, chr = chr, organism = organism)) 
+    names(lo) <- samples
+    mdTotal <- data.frame(bucket = rep(bucket, length(samples)))
+    row.names(mdTotal) <- samples
+    obj <- new("sparseHiCdata", HiCSamplesList = lo, metaData = mdTotal)
+})
+
 
 #' List Available Hi-C Samples from an AWS Bucket
 #'
@@ -98,13 +133,13 @@ setGeneric(name = "samplesInBucket", def = function(bucket)
 setMethod("samplesInBucket", signature("character"),
           definition = function(bucket) {
               t <- gsubfn::strapplyc(RCurl::getURL((paste0("https://s3.amazonaws.com/", bucket))), "<Key>(.*?)</Key>", simplify = c)
-              full <- t[grepl("hic", t) & grepl("resolutions.txt", t)]
+              full <- t[grepl("hic", t) & grepl("sparseHiC.meta", t)]
               if(length(full) > 0){
                   t2 <- unlist(strsplit(full, split = "-HiC"))
-                  return(sapply(strsplit(t2[!grepl("resolutions.txt", t2)], "/"), function(sample){
+                  return(sapply(strsplit(t2[grepl("data", t2)], "/"), function(sample){
                       v <- sample[4]
                       names(v) <- sample[2]
-                      return(v)
+                      v
                   }))
               } else {
                   return("none")

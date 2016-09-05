@@ -4,12 +4,13 @@ NULL
 
 # Internal function for library normalization
 # Takes a list of sparse matricies and returns the same list
-
+# But with normalized Hi-C values
 .libraryNormHiC <- function(losm){
     options(scipen=999)
     
     # Set up long matrix to get the differences
-    all <- summary(Reduce("+", losm))
+    idx <- lapply(losm, function(m) summary(m)[,c(1,2)])
+    all <- unique(Reduce("rbind", idx))
     counts <- sapply(losm, function(m){ as.matrix(m[cbind(all$i, all$j)])})
     long <- data.matrix(cbind(as.numeric(colnames(losm[[1]])[all$i]), as.numeric(colnames(losm[[1]])[all$j]), counts))
     diff <- abs(long[,1] - long[,2])
@@ -21,7 +22,7 @@ NULL
     ma <- res * (dim(losm[[1]])[1]-1)
     
     # Aggregate and append means
-    m <- aggregate(x = longdiff, by = list(longdiff[,6]), FUN = "mean")
+    m <- aggregate(x = longdiff, by = list(longdiff[,3+length(losm)]), FUN = "mean")
     scaled <- m[,4:(3 + length(losm))]/rowMeans(m[,4:(3 + length(losm))])
     mlo <- data.frame(cbind(diff = m[,4 + length(losm)], scaled))
     ldm <- merge(longdiff, mlo, by.x = c("diff"), by.y = c("diff"))
@@ -35,7 +36,7 @@ NULL
     # Apply transform and make new list
     dat <- lapply(1:(length(losm)), function(i){
         a <- data.frame(cbind(idx1=ldm[,2], idx2=ldm[,3], val=ldm[,i+3]/ldm[,i+3+length(losm)]))
-        Matrix(reshape2::acast(rbind(a, zeros.long), formula = idx2 ~ idx1, value.var = "val", fill = 0, fun.aggregate = sum))
+        Matrix(reshape2::acast(rbind(a, zeros.long), formula = idx1 ~ idx2, value.var = "val", fill = 0, fun.aggregate = sum))
     })
     return(dat)
 }
@@ -49,4 +50,12 @@ NULL
     names(HiCSamplesList) <- sampleName
     obj <- new("sparseHiCdata", HiCSamplesList = HiCSamplesList, metaData = md)
     return(obj)
+}
+
+# Sorts chromosome order like we would expect using factors
+
+.chrOrder <- function(chrvec){
+    chrOrder<-c(paste("chr",1:22,sep=""),"chrX","chrY","chrM")
+    chr<-factor(chrvec, levels=chrOrder)
+    return(chrvec[order(chr)])
 }
