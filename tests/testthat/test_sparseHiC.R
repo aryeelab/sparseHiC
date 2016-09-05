@@ -18,7 +18,7 @@ test_that("We get a list of 23 chromosomes and the matrix is square for chromoso
 
 context("Primitive Sample Addition")
 
-test_that("Associative property of S4 data holds", {
+test_that("Associative and commutative properties of S4 data holds", {
     rdsA<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
     hESCdatum1 <- readRDS(rdsA)
     rdsB<-paste(system.file('rds',package='sparseHiC'),'hESCdatum2.rds',sep='/')
@@ -29,4 +29,6 @@ test_that("Associative property of S4 data holds", {
     threeA <- IMR90datum1 + hESCdata
     threeB <-  IMR90datum1 + hESCdatum1 + hESCdatum2
     expect_equal(threeA, threeB)
+    expect_equal(utils::object.size(IMR90datum1 + hESCdatum1 + hESCdatum2),
+                 utils::object.size(hESCdatum1 + hESCdatum2 + IMR90datum1))
 })

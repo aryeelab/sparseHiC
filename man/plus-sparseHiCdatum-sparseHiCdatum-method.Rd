@@ -49,7 +49,7 @@ The metaData handling is designed for functionality, not inclusiveness.
 \examples{
 rdsA<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
 hESCdatum1 <- readRDS(rdsA)
-rdsB<-paste(system.file('rds',package='sparseHiC'),'hESCdatum1.rds',sep='/')
+rdsB<-paste(system.file('rds',package='sparseHiC'),'hESCdatum2.rds',sep='/')
 hESCdatum2 <- readRDS(rdsB)
 rdsC<-paste(system.file('rds',package='sparseHiC'),'IMR90datum1.rds',sep='/')
 IMR90datum1 <- readRDS(rdsC)
