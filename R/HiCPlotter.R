@@ -89,7 +89,7 @@ setMethod("getHiCcolor", def= function(p = character(0), name = character(0)) {
 #' @param x A sparseHiCdata object with samples to be visualized
 #' @param y A GRanges object containing region of interest
 #' @param res The resolution to be plotted
-#' @param libraryNorm = TRUE When plotting multiple samples,
+#' @param libraryNorm = FALSE When plotting multiple samples,
 #' normalize for library complexity?
 #' @param log2trans = TRUE log2transform the HiC data?
 #' @param quantiles = c(5, 95). A vector of length 2 OR 
@@ -124,7 +124,7 @@ setMethod("getHiCcolor", def= function(p = character(0), name = character(0)) {
 #' a <- plotHiC(hESCdata, region, res, showGenes = FALSE)
 #' 
 #' @export
-setGeneric(name = "plotHiC", def = function(x, y, res, libraryNorm = TRUE, log2trans = TRUE, quantiles = c(5, 95), 
+setGeneric(name = "plotHiC", def = function(x, y, res, libraryNorm = FALSE, log2trans = TRUE, quantiles = c(5, 95), 
                 color = getHiCcolor(16), missingco = "min", showLegend = TRUE, organism = 'h', 
                 showGenes = FALSE) standardGeneric("plotHiC"))
 

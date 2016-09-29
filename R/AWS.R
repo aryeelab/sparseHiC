@@ -32,7 +32,7 @@ setGeneric(name = "getSampleFromBucket", def = function(sample, bucket, chr = NA
 setMethod("getSampleFromBucket", def= function(sample, bucket, chr = NA, organism = "human") {
     if(length(sample) > 1) stop("use getSamplesFromBucket (plural) to get multiple samples from the same bucket")
     extURL <- paste0("data/", organism, "/hic/", sample, "-HiC/", sample, "-HiC")
-    base <- paste0("https://s3.amazonaws.com/", bucket, "/", extURL)
+    base <- paste0("http://s3.amazonaws.com/", bucket, "/", extURL)
     resFile <- paste0(base, ".sparseHiC.meta")
     chrSplit <- as.logical(strsplit(as.character(read.table(resFile, skip = 2)[1,]), split = "=")[[1]][2])
     
@@ -40,7 +40,7 @@ setMethod("getSampleFromBucket", def= function(sample, bucket, chr = NA, organis
         
         # User didn't define chromosomes, so import them all
         if(all(is.na(chr))) {
-            t <- gsubfn::strapplyc(RCurl::getURL((paste0("https://s3.amazonaws.com/", bucket))), "<Key>(.*?)</Key>", simplify = c)
+            t <- gsubfn::strapplyc(RCurl::getURL((paste0("http://s3.amazonaws.com/", bucket))), "<Key>(.*?)</Key>", simplify = c)
             chr <- sapply(strsplit(t[grepl(extURL,t) & grepl(".rds", t) & grepl("chr",t)], split = extURL),
                    function(hit){ strsplit(strsplit(hit[[2]], ".rds")[[1]], "-")[[1]][2] })
             chr <- .chrOrder(chr)
@@ -132,7 +132,7 @@ setGeneric(name = "samplesInBucket", def = function(bucket)
 #' @rdname samplesInBucket
 setMethod("samplesInBucket", signature("character"),
           definition = function(bucket) {
-              t <- gsubfn::strapplyc(RCurl::getURL((paste0("https://s3.amazonaws.com/", bucket))), "<Key>(.*?)</Key>", simplify = c)
+              t <- gsubfn::strapplyc(RCurl::getURL((paste0("http://s3.amazonaws.com/", bucket))), "<Key>(.*?)</Key>", simplify = c)
               full <- t[grepl("hic", t) & grepl("sparseHiC.meta", t)]
               if(length(full) > 0){
                   t2 <- unlist(strsplit(full, split = "-HiC"))

@@ -6,7 +6,7 @@
 \alias{plotHiC,ANY-method}
 \title{Plot HiC samples}
 \usage{
-plotHiC(x, y, res, libraryNorm = TRUE, log2trans = TRUE, quantiles = c(5,
+plotHiC(x, y, res, libraryNorm = FALSE, log2trans = TRUE, quantiles = c(5,
   95), color = getHiCcolor(16), missingco = "min", showLegend = TRUE,
   organism = "h", showGenes = FALSE)
 
@@ -21,7 +21,7 @@ plotHiC(x, y, res, libraryNorm = TRUE, log2trans = TRUE, quantiles = c(5,
 
 \item{res}{The resolution to be plotted}
 
-\item{libraryNorm}{= TRUE When plotting multiple samples,
+\item{libraryNorm}{= FALSE When plotting multiple samples,
 normalize for library complexity?}
 
 \item{log2trans}{= TRUE log2transform the HiC data?}
