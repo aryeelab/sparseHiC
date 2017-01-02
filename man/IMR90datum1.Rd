@@ -20,14 +20,10 @@ i1 <- import.HiCPro(matrix.files, bed.files, resolutions, sampleName = "IMR90_1"
 IMR90datum1 <- getChromosome(i1, c("chr20", "chr21", "chr22"), FALSE)
 saveRDS(IMR90datum1, "inst/rds/IMR90datum1.rds")
 }
-\usage{
-IMR90datum1
-}
 \value{
 A sparseHiCdatum
 }
 \description{
 A sparseHiCdatum object from the IMR90 replicate1
 }
-\keyword{datasets}
 

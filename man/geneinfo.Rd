@@ -17,9 +17,6 @@
 \source{
 biomaRt July 2015 stable build
 }
-\usage{
-geneinfo
-}
 \value{
 A data.frame
 }
@@ -29,5 +26,4 @@ and mouse. Each loaded .rda has the same variable
 called "geneinfo" (so don't co-load these), but 
 the files differ by an m orh
 }
-\keyword{datasets}
 

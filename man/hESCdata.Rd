@@ -16,14 +16,10 @@ hESCdatum2 <- readRDS("inst/rds/hESCdatum2.rds")
 hESCdata <- hESCdatum1 + hESCdatum2
 saveRDS(hESCdata, "inst/rds/hESCdata.rds")
 }
-\usage{
-hESCdata
-}
 \value{
 A sparseHiCdata object for samples
 }
 \description{
 A sparseHiCdata object for both the ESC replicates
 }
-\keyword{datasets}
 

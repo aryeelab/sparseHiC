@@ -20,14 +20,10 @@ e2 <- import.HiCPro(matrix.files, bed.files, resolutions, sampleName = "hESC1", 
 hESCdatum2 <- getChromosome(e2, c("chr20", "chr21", "chr22"), FALSE)
 saveRDS(hESCdatum2, "inst/rds/hESCdatum2.rds")
 }
-\usage{
-hESCdatum2
-}
 \value{
 A sparseHiCdatum
 }
 \description{
 A sparseHiCdatum object from the ESC replicate 2
 }
-\keyword{datasets}
 

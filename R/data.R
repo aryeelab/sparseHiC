@@ -4,7 +4,8 @@ NULL
 #' hESC1 Sample
 #'
 #' A sparseHiCdatum object from the ESC replicate 1 
-#'
+#' @name hESCdatum1
+#' @docType data
 #' @format A small loops object 
 #' \describe{
 #'   \item{sampleName}{hESC1}
@@ -20,13 +21,14 @@ NULL
 #' e1 <- import.HiCPro(matrix.files, bed.files, resolutions, sampleName = "hESC1", genomeBuild)
 #' hESCdatum1 <- getChromosome(e1, c("chr20", "chr21", "chr22"), FALSE)
 #' saveRDS(hESCdatum1, "inst/rds/hESCdatum1.rds")
-#' 
-"hESCdatum1"
+NULL
 
 #' hESC2 Sample
 #'
 #' A sparseHiCdatum object from the ESC replicate 2
-#'
+#' 
+#' @name hESCdatum2
+#' @docType data
 #' @format A small loops object 
 #' \describe{
 #'   \item{sampleName}{hESC2}
@@ -42,12 +44,14 @@ NULL
 #' e2 <- import.HiCPro(matrix.files, bed.files, resolutions, sampleName = "hESC1", genomeBuild)
 #' hESCdatum2 <- getChromosome(e2, c("chr20", "chr21", "chr22"), FALSE)
 #' saveRDS(hESCdatum2, "inst/rds/hESCdatum2.rds")
-"hESCdatum2"
+NULL
 
 #' IMR90 Sample
 #'
 #' A sparseHiCdatum object from the IMR90 replicate1
-#'
+#' @name IMR90datum1
+#' @docType data
+#' 
 #' @format A small loops object 
 #' \describe{
 #'   \item{sampleName}{IMR90_1}
@@ -63,12 +67,13 @@ NULL
 #' i1 <- import.HiCPro(matrix.files, bed.files, resolutions, sampleName = "IMR90_1", genomeBuild)
 #' IMR90datum1 <- getChromosome(i1, c("chr20", "chr21", "chr22"), FALSE)
 #' saveRDS(IMR90datum1, "inst/rds/IMR90datum1.rds")
-"IMR90datum1"
+NULL
 
 #' hESC Samples
 #'
 #' A sparseHiCdata object for both the ESC replicates
-#'
+#' @name hESCdata
+#' @docType data
 #' @format A small loops object 
 #' \describe{
 #'   \item{HiCSamplesList}{hESC1 and hESC2 each with 1Mb with chr20-22 }
@@ -80,7 +85,7 @@ NULL
 #' hESCdatum2 <- readRDS("inst/rds/hESCdatum2.rds")
 #' hESCdata <- hESCdatum1 + hESCdatum2
 #' saveRDS(hESCdata, "inst/rds/hESCdata.rds")
-"hESCdata"
+NULL
 
 #' Human/mouse exon locations
 #'
@@ -88,6 +93,9 @@ NULL
 #' and mouse. Each loaded .rda has the same variable
 #' called "geneinfo" (so don't co-load these), but 
 #' the files differ by an m orh
+#'
+#' @name geneinfo
+#' @docType data
 #'
 #' @format A GRanges object 
 #' \describe{
@@ -101,4 +109,4 @@ NULL
 #' }
 #' @return A data.frame
 #' @source biomaRt July 2015 stable build
-"geneinfo"
+NULL
