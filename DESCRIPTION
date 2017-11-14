@@ -1,7 +1,7 @@
 Package: sparseHiC
 Type: Package
 Title: Efficient compression and analysis of Hi-C Data
-Version: 0.4.2
+Version: 0.4.3
 Date: 2017-01-02
 Authors@R: c(
     person("Caleb", "Lareau", email = "caleblareau@g.harvard.edu", role = c("aut", "cre")),
