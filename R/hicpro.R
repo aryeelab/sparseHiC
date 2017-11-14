@@ -58,6 +58,19 @@ setGeneric(name = "import.HiCPro",
                          tempFile = TRUE, BPPARAM = BiocParallel::bpparam())
                standardGeneric("import.HiCPro"))
 
+#
+#matrix.files="/data/aryee/bernstein/hic/runs/hicpro_output/hic_results/matrix/HCT116-rao-1/raw/100000/HCT116-rao-1_100000.matrix"
+#bed.files="/data/aryee/bernstein/hic/runs/hicpro_output/hic_results/matrix/HCT116-rao-1/raw/100000/HCT116-rao-1_100000_abs.bed"
+#resolutions="100000"
+#sampleName="prueba"
+#genomeBuild="hg19"
+#drop.chrom <- c("chrY", "chrM")
+#manual.chr=NA
+#manual.dist=NA
+#tempFile=TRUE
+#BPPARAM <- BiocParallel:::SerialParam()
+
+
 #' @rdname import.HiCPro
 setMethod(f = "import.HiCPro",
           def = function(matrix.files, bed.files, resolutions, sampleName, genomeBuild = NA,
@@ -72,24 +85,22 @@ setMethod(f = "import.HiCPro",
     # Configure some of the user parameters
     dist <- .chrDistBuild(genomeBuild, manual.chr, manual.dist)
     dist <- dist[!(names(dist) %in% drop.chrom)]
-    
     # Import data for each supplied resolution
     collectedRes <- lapply(1:length(resolutions), function(i){
         bed.GRanges <- GRanges(data.frame(
             read_tsv(bed.files[i], col_names = c("chr", "start", "stop", "region"))))
         matrix.file <- matrix.files[i]
-        if(tempFile){
+        if(tempFile & n != 0 ){
             temp <- paste0(sampleName, ".tempFile.sparseHiC.txt")
             cmd <- paste0('awk \'$1+', as.character(n),' >= $2 {print $0}\' ', 
                           matrix.file, ' > ', temp)
             system(cmd) 
             matrix.file <- temp
         }
-        
         dat.long <-read_tsv(matrix.file, col_names = c("idx1", "idx2", "region"))
-        if(tempFile) file.remove(temp)
+        if( tempFile & n != 0 ) file.remove(temp)
         list.dat <- bplapply(names(dist), function(chr) {
-            Matrix(as.matrix(.matrixBuild.intra(chr, bed.GRanges, dat.long, resolutions[i], dist, n)))
+            Matrix(.matrixBuild.intra2(chr, bed.GRanges, dat.long, resolutions[i], dist, n))
         }, BPPARAM = BPPARAM)
         
         names(list.dat) <- names(dist)
@@ -102,6 +113,7 @@ setMethod(f = "import.HiCPro",
     obj <- new("sparseHiCdatum", sampleName = sampleName, resolutionNamedList = collectedRes, metaData = md)
     return(obj)
 })
+
 
 #' Compress all Hi-C Pro output data, including interchromosomal interactions
 #'
