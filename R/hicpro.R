@@ -88,7 +88,7 @@ setMethod(f = "import.HiCPro",
     # Import data for each supplied resolution
     collectedRes <- lapply(1:length(resolutions), function(i){
         bed.GRanges <- GRanges(data.frame(
-            read_tsv(bed.files[i], col_names = c("chr", "start", "stop", "region"))))
+            read_tsv(bed.files[i], col_names = c("chr", "start", "stop", "region"), col_types="ciii")))
         matrix.file <- matrix.files[i]
         if(tempFile & n != 0 ){
             temp <- paste0(sampleName, ".tempFile.sparseHiC.txt")
